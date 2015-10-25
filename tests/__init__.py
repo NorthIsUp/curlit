@@ -29,19 +29,25 @@ def fixture(*args, **kwargs):
 
     if kwargs.pop('autoparam', False):
 
-        def autoparam(self, request):
-            # self exits just to eat the self argument if autoparam is used
-            # inside a class. It will be provided by the self fixture in other cases
-            return request.param
+        import inspect
+        frames = inspect.stack()
+
+        defined_in_class = (
+            len(frames) > 2
+            and frames[2][4][0].strip().startswith('class ')
+        )
+
+        if defined_in_class:
+            def autoparam(self, request):
+                return request.param
+        else:
+            def autoparam(request):
+                return request.param
+
         return decorator_factory(autoparam)
 
     return decorator_factory
 
-
-@fixture()
-def self():
-    # to allow autoparam to
-    pass
 
 class BaseCurlTest(object):
 

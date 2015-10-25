@@ -1,4 +1,4 @@
-from tests import fixture, self
+from tests import fixture
 from urlparse import urlunsplit
 
 method = fixture(GET='GET', POST='POST', NOPE='NOPE', autoparam=True)
