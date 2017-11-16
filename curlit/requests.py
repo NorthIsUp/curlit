@@ -23,6 +23,13 @@ else:
         def absolute_uri(self):
             return self.request.url
 
+        @property
+        def data(self):
+            if hasattr(self.request, 'body'):
+                return self.request.body
+            if hasattr(self.request, 'data'):
+                return self.request.data
+
     RequestsCurl.register()
 
     class RequestsResponseCurl(RequestsCurl):

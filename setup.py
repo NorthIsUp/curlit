@@ -23,6 +23,7 @@ requirements = [
 ]
 
 test_requirements = [
+    'six',
     'mock',
     'pytest',
     'django',

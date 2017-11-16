@@ -29,19 +29,13 @@ def fixture(*args, **kwargs):
 
     if kwargs.pop('autoparam', False):
 
-        import inspect
-        frames = inspect.stack()
-
-        defined_in_class = (
-            len(frames) > 2
-            and frames[2][4][0].strip().startswith('class ')
-        )
-
-        if defined_in_class:
+        if is_inside_class():
             def autoparam(self, request):
+                print(request.param)
                 return request.param
         else:
             def autoparam(request):
+                print(request.param)
                 return request.param
 
         return decorator_factory(autoparam)
@@ -49,22 +43,40 @@ def fixture(*args, **kwargs):
     return decorator_factory
 
 
+def is_inside_class():
+    """
+
+    Returns: Class name of encapsulating class or None
+
+    """
+    import inspect
+    frames = inspect.stack()
+
+    for frame in frames[1:]:
+        if frame[3] == "<module>":
+            # At module level, go no further
+            return
+        elif '__module__' in frame[0].f_code.co_names:
+            # found the encapsulating class, go no further
+            return frame[0].f_code.co_name
+
+
 class BaseCurlTest(object):
 
     @fixture()
     def curl_obj(self, req, expected_class):
         c = curlit(req, strify=False)
-        assert isinstance(c.wrapper, expected_class)
+        assert isinstance(c, expected_class)
         return c
 
-    def test_curlit_helper(self, curl_obj, scheme, netloc, path, query, url):
+    def test_curlit_helper(self, curl_obj, scheme, netloc, path, query, url, req):
         curl = str(curl_obj)
         assert url in curl
         assert curl.startswith('curl')
 
     def test_Curl_class(self, req, expected_class):
         c = Curl(req)
-        assert isinstance(c.wrapper, expected_class)
+        assert isinstance(c, expected_class)
 
     def test_subclass_directly(self, req, expected_class):
         c = expected_class(req)
