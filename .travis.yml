@@ -16,6 +16,5 @@ deploy:
   password:
     secure: "aqwnh7amTlP7NIFtonBG/UFZf7uOGkR1pJhf8xV/H1pE95ZKFxnuno+4HC74fHeX7jN1x23l+MbHYclJhHjUxf7vuP9jgmWrPZ49loWuSx6eVh9ZVDwT2gcPyhqjLkUMqD7gv+3wCcbil3lW67Q+H49CdANinfvlTjoHVkHsmMJjjDQblp5ZVdPeUuxP+ktjvaWBj/V79vvzrML3pWrrW74S173QmSNwav9aJTR5dZqXnS74v7pmiUeIzx/JDQ3sJn/TwZ8oJxR0hTAyg5kI1q9UluzE3nz8Azdq+YILMyDxjPqaEkIZDIRrY7lT7ZG+ZpTQPV/dnusnSq9u3D3vURfCDNixv8XY3CRG3N9vzbZBh+E8RqQNP/UL1XVl16yh8YFPp2iRtFGCIKHufFPJw9lhqQCAzKsb0mCZ/E8sFhSN84h1bDcyCCyk6MMY0zpuQYd+GaaWi0562Yjt192Mf2En42lDwc9J+CpnTMVx9WEhs34oWp3coNBFJbupR6gpXqdmj/7LlsQ2hxgDBcuCphyhlfYMuqN+rMVsDCt/uWUOSv9MSbhqpWRvwwg2ST9XC/SLd5rgRv0ZNsygT8cL+M6hnsnz/8BZcTQEnRfYz3I9T82b2VAfJl7/rdVVwEHn+LXYdFpqvRTgqpKris9YPk8fNzH7wR1Fx82ZnF5rXto="
   on:
-    tags: true
     repo: NorthIsUp/curlit
     condition: $TOXENV == py27
