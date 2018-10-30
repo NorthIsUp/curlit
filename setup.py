@@ -26,7 +26,7 @@ test_requirements = [
     'six',
     'mock',
     'pytest',
-    'django',
+    'django<2.0.0',
     'requests',
 ]
 
