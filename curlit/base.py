@@ -1,15 +1,14 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import
-
 import six
+from collections import OrderedDict
 
-
-def join(strings, multiline=False):
-    joiner = ' \n\t' if multiline else ' '
+def join(strings, indent=0):
+    joiner = ' \\\n{}'.format(' ' * indent) if indent else ' '
     return joiner.join(str(_).strip() for _ in strings if _)
 
 
-class OptionsDict(dict):
+class OptionsDict(OrderedDict):
 
     def add_option(self, option_key, *values):
         for value in values:
@@ -19,13 +18,13 @@ class OptionsDict(dict):
             value = '\'{}\''.format(value)
             self.setdefault(option_key, []).append(value)
 
-    def options(self, multiline=False):
+    def options(self, indent=0):
         return join((
             '{} {}'.format('--' + option_key if option_key else option_key, value).strip()
             for option_key in self
             for value in self[option_key]
             ),
-            multiline=multiline
+            indent=indent
         )
     def __str__(self):
         return self.options()
@@ -101,14 +100,14 @@ class Curl(object):
     def data(self):
         return NotImplemented
 
-    def curl(self, verbose=False, multiline=False):
+    def curl(self, verbose=False, indent=0):
         """
         Returns(str): string that can be run as a curl command
         """
         verbosity = '-' + 'v' * verbose if verbose else ''
 
-        options = self.options.options(multiline=multiline)
-        return join(('curl', verbosity, options), multiline=multiline)
+        options = self.options.options(indent=indent)
+        return join(('curl', verbosity, options), indent=indent)
 
     @classmethod
     def register(cls):

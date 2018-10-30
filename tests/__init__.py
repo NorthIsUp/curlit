@@ -31,11 +31,9 @@ def fixture(*args, **kwargs):
 
         if is_inside_class():
             def autoparam(self, request):
-                print(request.param)
                 return request.param
         else:
             def autoparam(request):
-                print(request.param)
                 return request.param
 
         return decorator_factory(autoparam)
@@ -69,17 +67,21 @@ class BaseCurlTest(object):
         assert isinstance(c, expected_class)
         return c
 
-    def test_curlit_helper(self, curl_obj, scheme, netloc, path, query, url, req):
-        curl = str(curl_obj)
+    @pytest.mark.parametrize('indent', [0, False])
+    def test_curlit_helper(self, indent, curl_obj, scheme, netloc, path, query, url, req):
+        curl = curl_obj.curl(indent=indent)
         assert url in curl
         assert curl.startswith('curl')
+        assert '\n' not in curl
 
-    def test_curlit_helper(self, curl_obj, scheme, netloc, path, query, url, req):
-        curl = curl_obj.curl(multiline=True)
+    @pytest.mark.parametrize('indent', [True, 1, 2, 4, 8])
+    def test_curlit_helper_indent(self, indent, curl_obj, scheme, netloc, path, query, url, req):
+        curl = curl_obj.curl(indent=indent)
+        indentation = ' ' * indent
         assert url in curl
         assert curl.startswith('curl')
         for segment in curl.split('--')[:-1]:
-            assert segment.endswith('\n\t'), '__{}__ does not end with "\\n\\t"'.format(segment)
+            assert segment.endswith('\\\n' + indentation), '__{}__ does not end with "\\n\\t"'.format(segment)
 
     def test_Curl_class(self, req, expected_class):
         c = Curl(req)
