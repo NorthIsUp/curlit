@@ -32,10 +32,10 @@ test_requirements = [
 
 setup(
     name='curlit',
-    version='0.1.0',
+    version='0.1.1',
     description="Generate curl commands from various python libraries request objects",
     long_description=readme + '\n\n' + history,
-    author="Adam Hitchcock",
+    author="Adam Hitchcocactk",
     author_email='adam@northisup.com',
     url='https://github.com/NorthIsUp/curlit',
     packages=[
