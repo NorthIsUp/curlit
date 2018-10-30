@@ -10,6 +10,6 @@ class TestRequestsCurl(BaseCurlTest):
     expected_class = fixture(UrllibRequest, scope='class', autoparam=True)
 
     @fixture()
-    def req(self, method, url):
+    def req(self, method, url, headers):
         data = None if method == 'GET' else method
-        return Request(url, data=data)
+        return Request(url, data=data, headers=headers)

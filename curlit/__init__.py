@@ -9,7 +9,6 @@ from .urllib import *
 
 
 def curlit(request, strify=True):
-    print('-->', id(Curl))
     c = Curl(request)
     if strify:
         c = str(c)

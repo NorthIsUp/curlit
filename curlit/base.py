@@ -4,11 +4,9 @@ from __future__ import absolute_import
 import six
 
 
-def join(*strings):
-    from types import GeneratorType
-    if len(strings) == 1 and isinstance(strings[0], GeneratorType):
-        strings = strings[0]
-    return ' '.join(str(_).strip() for _ in strings if _)
+def join(strings, multiline=False):
+    joiner = ' \n\t' if multiline else ' '
+    return joiner.join(str(_).strip() for _ in strings if _)
 
 
 class OptionsDict(dict):
@@ -21,12 +19,16 @@ class OptionsDict(dict):
             value = '\'{}\''.format(value)
             self.setdefault(option_key, []).append(value)
 
-    def __str__(self):
-        return join(
-            '{} {}'.format('--' + option_key if option_key else option_key, value)
+    def options(self, multiline=False):
+        return join((
+            '{} {}'.format('--' + option_key if option_key else option_key, value).strip()
             for option_key in self
             for value in self[option_key]
+            ),
+            multiline=multiline
         )
+    def __str__(self):
+        return self.options()
 
 
 @six.python_2_unicode_compatible
@@ -99,12 +101,14 @@ class Curl(object):
     def data(self):
         return NotImplemented
 
-    def curl(self, verbose=False):
+    def curl(self, verbose=False, multiline=False):
         """
         Returns(str): string that can be run as a curl command
         """
         verbosity = '-' + 'v' * verbose if verbose else ''
-        return join('curl', verbosity, self.options)
+
+        options = self.options.options(multiline=multiline)
+        return join(('curl', verbosity, options), multiline=multiline)
 
     @classmethod
     def register(cls):
