@@ -32,7 +32,7 @@ test_requirements = [
 
 setup(
     name='curlit',
-    version='0.1.1',
+    version='0.1.2',
     description="Generate curl commands from various python libraries request objects",
     long_description=readme + '\n\n' + history,
     author="Adam Hitchcocactk",

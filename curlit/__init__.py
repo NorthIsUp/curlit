@@ -8,8 +8,8 @@ from .requests import *
 from .urllib import *
 
 
-def curlit(request, strify=True):
+def curlit(request, strify=True, verbose=False, multiline=False):
     c = Curl(request)
     if strify:
-        c = str(c)
+        c = c.curl(verbose=verbose, multiline=multiline)
     return c
