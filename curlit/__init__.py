@@ -18,7 +18,6 @@ def curlit(
     if strify:
         c = c.curl(
             verbose=verbose,
-            multiline=multiline,
             indent=indent,
         )
     return c

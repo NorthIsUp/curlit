@@ -67,21 +67,36 @@ class BaseCurlTest(object):
         assert isinstance(c, expected_class)
         return c
 
-    @pytest.mark.parametrize('indent', [0, False])
-    def test_curlit_helper(self, indent, curl_obj, scheme, netloc, path, query, url, req):
-        curl = curl_obj.curl(indent=indent)
-        assert url in curl
-        assert curl.startswith('curl')
-        assert '\n' not in curl
+    @pytest.mark.parametrize('indent', [False, True, 0, 2])
+    @pytest.mark.parametrize('strify', [False, True])
+    def test_curlit_helper(self, indent, strify, expected_class, scheme, netloc, path, query, url, req):
+        curl = curlit(req, strify=strify, indent=indent)
 
-    @pytest.mark.parametrize('indent', [True, 1, 2, 4, 8])
-    def test_curlit_helper_indent(self, indent, curl_obj, scheme, netloc, path, query, url, req):
+        if strify:
+            assert url in curl
+            assert curl.startswith('curl')
+            if indent:
+                indentation = ' ' * indent
+                for segment in curl.split('--')[:-1]:
+                    assert segment.endswith('\\\n' + indentation), '__{}__ does not end with "\\n\\t"'.format(segment)
+            else:
+                assert '\n' not in curl
+        else:
+            assert isinstance(curl, expected_class)
+
+    @pytest.mark.parametrize('indent', [0, False, True, 1, 2, 4, 8])
+    def test_curlit_obj_indent(self, indent, curl_obj, scheme, netloc, path, query, url, req):
         curl = curl_obj.curl(indent=indent)
-        indentation = ' ' * indent
+
         assert url in curl
         assert curl.startswith('curl')
-        for segment in curl.split('--')[:-1]:
-            assert segment.endswith('\\\n' + indentation), '__{}__ does not end with "\\n\\t"'.format(segment)
+
+        if indent:
+            indentation = ' ' * indent
+            for segment in curl.split('--')[:-1]:
+                assert segment.endswith('\\\n' + indentation), '__{}__ does not end with "\\n\\t"'.format(segment)
+        else:
+            assert '\n' not in curl
 
     def test_Curl_class(self, req, expected_class):
         c = Curl(req)
